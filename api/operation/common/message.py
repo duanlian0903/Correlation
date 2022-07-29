@@ -1,6 +1,6 @@
 # tested
 import smtplib
-import win32com.client as wincl
+#import win32com.client as wincl
 import api.entire_project_parameter as aepp
 
 
@@ -16,8 +16,9 @@ def send_email(subject, content):  # tested
 
 def speak_message(text):  # tested
     try:
-        speak = wincl.Dispatch('SAPI.SpVoice')
-        speak.Speak(text)
+        #speak = wincl.Dispatch('SAPI.SpVoice')
+        #speak.Speak(text)
+        check = 1
     except:
         show_exception_message('Having error for speaking')
 

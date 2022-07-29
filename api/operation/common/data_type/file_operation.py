@@ -98,7 +98,7 @@ def load_pickle_data(file_name):  # tested
                 pickle_data = pickle.load(pickle_file)
                 pickle_file.close()
             else:
-                aocm.show_exception_message('We will return a null dataframe due to non-existing file.')
+                aocm.show_exception_message('We will return a null dataframe due to non-existing file'+str(file_name)+'.')
         else:
             aocm.show_exception_message('We will return a null dataframe because the file name is not a string.')
     except:
