@@ -4,7 +4,7 @@ import os
 import shutil
 import pandas as pd
 import json
-import api.common.message as aocm
+import api.common.message as acm
 
 
 def check_file_existence(file_name):  # tested
@@ -25,7 +25,7 @@ def copy_file(source_file_path, destine_file_path):  # tested
     try:
         shutil.copy2(source_file_path, destine_file_path)
     except:
-        aocm.show_exception_message('Fail to copy due to unexpected errors[' + str(source_file_path) + ', ' + str(destine_file_path) + '].')
+        acm.show_exception_message('Fail to copy due to unexpected errors[' + str(source_file_path) + ', ' + str(destine_file_path) + '].')
 
 
 def delete_file(file_name):  # tested
@@ -45,7 +45,7 @@ def generate_folder_for_file(file_name):  # tested
             if not check_folder_existence(current_path):
                 os.mkdir(current_path)
     except:
-        aocm.show_exception_message('Fail to generate the related folders due to unexpected errors.')
+        acm.show_exception_message('Fail to generate the related folders due to unexpected errors.')
 
 
 def delete_file_in_the_current_folder(folder_name):  # tested
@@ -56,7 +56,7 @@ def delete_file_in_the_current_folder(folder_name):  # tested
             file_name = folder_name+'/'+file_folder
             delete_file(file_name)
     except:
-        aocm.show_exception_message('Fail to delete files in the given folder level due to unexpected errors.')
+        acm.show_exception_message('Fail to delete files in the given folder level due to unexpected errors.')
 
 
 def delete_file_inside_folder(folder_name):  # tested
@@ -68,7 +68,7 @@ def delete_file_inside_folder(folder_name):  # tested
             if os.path.isdir(path):
                 delete_file_inside_folder(path)
     except:
-        aocm.show_exception_message('Fail to delete files insider all the subfolders due to unexpected errors.')
+        acm.show_exception_message('Fail to delete files insider all the subfolders due to unexpected errors.')
 
 
 def save_pickle_data(data, file_name, whether_save_csv=False):  # tested
@@ -82,11 +82,11 @@ def save_pickle_data(data, file_name, whether_save_csv=False):  # tested
                 if isinstance(data, pd.DataFrame):
                     data.to_csv(file_name+'.csv')
                 else:
-                    aocm.show_exception_message('We have trouble saving ' + str(file_name) + '.csv because the variable is not a dataframe.')
+                    acm.show_exception_message('We have trouble saving ' + str(file_name) + '.csv because the variable is not a dataframe.')
         else:
-            aocm.show_exception_message('We have trouble saving ' + str(file_name) + '.csv because the file name is not a string.')
+            acm.show_exception_message('We have trouble saving ' + str(file_name) + '.csv because the file name is not a string.')
     except:
-        aocm.show_exception_message('We have trouble saving ' + str(file_name) + '.csv due to unexpected errors.')
+        acm.show_exception_message('We have trouble saving ' + str(file_name) + '.csv due to unexpected errors.')
 
 
 def load_pickle_data(file_name):  # tested
@@ -98,11 +98,11 @@ def load_pickle_data(file_name):  # tested
                 pickle_data = pickle.load(pickle_file)
                 pickle_file.close()
             else:
-                aocm.show_exception_message('We will return a null dataframe due to non-existing file'+str(file_name)+'.')
+                acm.show_exception_message('We will return a null dataframe due to non-existing file' + str(file_name) + '.')
         else:
-            aocm.show_exception_message('We will return a null dataframe because the file name is not a string.')
+            acm.show_exception_message('We will return a null dataframe because the file name is not a string.')
     except:
-        aocm.show_exception_message('We will return a null dataframe due to unexpected errors.')
+        acm.show_exception_message('We will return a null dataframe due to unexpected errors.')
     return pickle_data
 
 
@@ -115,11 +115,11 @@ def load_pickle_data_dict(file_name):  # tested
                 data = load_pickle_data(file_name)
                 whether_has_file = True
             else:
-                aocm.show_exception_message('We will return False value due to non-existing file.')
+                acm.show_exception_message('We will return False value due to non-existing file.')
         else:
-            aocm.show_exception_message('We will return False value because the file name is not a string.')
+            acm.show_exception_message('We will return False value because the file name is not a string.')
     except:
-        aocm.show_exception_message('We will return False value due to unexpected errors.')
+        acm.show_exception_message('We will return False value due to unexpected errors.')
     return {'whether_has_file': whether_has_file, 'data': data}
 
 
@@ -139,11 +139,11 @@ def save_excel_file(df, file_name):  # tested
                     worksheet.write(0, col_num+1, value, header_format)
                 writer.save()
             else:
-                aocm.show_exception_message('We have trouble saving excel file because the variable is not a dataframe.')
+                acm.show_exception_message('We have trouble saving excel file because the variable is not a dataframe.')
         else:
-            aocm.show_exception_message('We have trouble saving excel file because the file name is not a string.')
+            acm.show_exception_message('We have trouble saving excel file because the file name is not a string.')
     except:
-        aocm.show_exception_message('We have trouble saving excel file due to unexpected errors.')
+        acm.show_exception_message('We have trouble saving excel file due to unexpected errors.')
 
 
 def get_item_set_from_file(file_name):  # tested
@@ -155,10 +155,10 @@ def get_item_set_from_file(file_name):  # tested
             for line in lines:
                 item_list.append(line[:-1])
         else:
-            aocm.show_exception_message('We will return an empty set due to non-existing file.')
+            acm.show_exception_message('We will return an empty set due to non-existing file.')
         return set(item_list)
     except:
-        aocm.show_exception_message('We will return an empty set due to unexpected errors.')
+        acm.show_exception_message('We will return an empty set due to unexpected errors.')
         return set()
 
 
@@ -167,10 +167,10 @@ def load_json_file_as_dict(file_name):  # tested
         if check_file_existence(file_name):
             result = json.load(open(file_name))
         else:
-            aocm.show_exception_message('We will return an empty dictionary due to non-existing file.')
+            acm.show_exception_message('We will return an empty dictionary due to non-existing file.')
             result = {}
     except:
-        aocm.show_exception_message('We will return an empty dictionary due to unexpected errors.')
+        acm.show_exception_message('We will return an empty dictionary due to unexpected errors.')
         result = {}
     return result
 
@@ -181,7 +181,7 @@ def save_dict_as_json_file(dict_data, file_name):  # tested
         content = open(file_name, 'r').read().replace(',', ',\n')
         open(file_name, 'w').write(content)
     except:
-        aocm.show_exception_message('We have unexpected errors to save json file: ' + str(file_name))
+        acm.show_exception_message('We have unexpected errors to save json file: ' + str(file_name))
 
 
 def update_json_file(file_name, updating_dict_data):  # tested
@@ -190,7 +190,7 @@ def update_json_file(file_name, updating_dict_data):  # tested
         for key in updating_dict_data:
             json_dict[key] = updating_dict_data[key]
     except:
-        aocm.show_exception_message('We have unexpected errors to update json file with dict ' + str(updating_dict_data))
+        acm.show_exception_message('We have unexpected errors to update json file with dict ' + str(updating_dict_data))
     save_dict_as_json_file(json_dict, file_name)
 
 
@@ -207,7 +207,7 @@ def generate_summary_df_in_the_folder(folder_name):  # tested
             result = pd.concat(df_list)
         return result
     except:
-        aocm.show_exception_message('We will return a null dataframe due to unexpected errors to generate summary df from the folder ' + str(folder_name))
+        acm.show_exception_message('We will return a null dataframe due to unexpected errors to generate summary df from the folder ' + str(folder_name))
         return pd.DataFrame([])
 
 
@@ -215,7 +215,7 @@ def get_index_list(df_file_name):  # tested
     try:
         return sorted(list(set(load_pickle_data(df_file_name).index)))
     except:
-        aocm.show_exception_message('We will return an empty list due to unexpected errors for the df file ' + str(df_file_name))
+        acm.show_exception_message('We will return an empty list due to unexpected errors for the df file ' + str(df_file_name))
         return []
 
 
@@ -227,7 +227,7 @@ def save_given_source_information_df_with_overwrite(ticker, filename_function, r
         else:
             print('Information for ' + str(ticker) + ' is not saved for the empty dataframe retrieved with ' + str(retrieve_df_function))
     except:
-        aocm.show_exception_message('Information for ' + str(ticker) + ' is not updated due to unexpected errors.')
+        acm.show_exception_message('Information for ' + str(ticker) + ' is not updated due to unexpected errors.')
 
 
 def save_given_source_information_df_without_overwrite(ticker, filename_function, retrieve_df_function, whether_save_csv=False):  # tested
@@ -235,5 +235,5 @@ def save_given_source_information_df_without_overwrite(ticker, filename_function
         if not load_pickle_data_dict(filename_function(ticker))['whether_has_file']:
             save_given_source_information_df_with_overwrite(ticker, filename_function, retrieve_df_function, whether_save_csv)
     except:
-        aocm.show_exception_message('Information for ' + str(ticker) + ' is not updated due to unexpected errors.')
+        acm.show_exception_message('Information for ' + str(ticker) + ' is not updated due to unexpected errors.')
 
