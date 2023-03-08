@@ -49,3 +49,14 @@ def get_lowerbound_corrected_contingency_table_dict(contingency_table_dict, targ
         corrected_ocp = bound_dict['lowerbound']
     return {'n11': corrected_ocp*n, 'n10': contingency_table_dict['n11'] + contingency_table_dict['n10'] - corrected_ocp * n,
             'n01': contingency_table_dict['n11'] + contingency_table_dict['n01'] - corrected_ocp * n, 'n00': contingency_table_dict['n00'] - contingency_table_dict['n11'] + corrected_ocp * n}
+
+
+def get_upperbound_corrected_contingency_table_dict(contingency_table_dict, target_p_value, delta=0.0001):
+    n = contingency_table_dict['n11'] + contingency_table_dict['n10'] + contingency_table_dict['n01'] + contingency_table_dict['n00']
+    ocp = contingency_table_dict['n11'] / n
+    corrected_ocp = ocp
+    if (ocp != 0) & (ocp != 1):
+        bound_dict = bound_dict_for_likelihood_ratio_test_with_binomial_distribution(ocp, n, target_p_value, delta)
+        corrected_ocp = bound_dict['upperbound']
+    return {'n11': corrected_ocp*n, 'n10': contingency_table_dict['n11'] + contingency_table_dict['n10'] - corrected_ocp * n,
+            'n01': contingency_table_dict['n11'] + contingency_table_dict['n01'] - corrected_ocp * n, 'n00': contingency_table_dict['n00'] - contingency_table_dict['n11'] + corrected_ocp * n}
