@@ -1,6 +1,6 @@
 # tested
 import math
-import api.common.message as aocm
+import api.common.message as acm
 
 
 def get_log_value(number, base_number=math.e):  # tested
@@ -9,7 +9,7 @@ def get_log_value(number, base_number=math.e):  # tested
         if number > 0:
             log_value = math.log(number, base_number)
     except:
-        aocm.show_exception_message('Having unexpected error for log calculation [' + str(number) + ', ' + str(base_number) + '], and return nan value.')
+        acm.show_exception_message('Having unexpected error for log calculation [' + str(number) + ', ' + str(base_number) + '], and return nan value.')
     return log_value
 
 
@@ -18,7 +18,7 @@ def get_exponential_value(number, base_number=math.e):  # tested
     try:
         exponential_value = math.pow(base_number, number)
     except:
-        aocm.show_exception_message('Having unexpected error for power calculation [' + str(number) + ', ' + str(base_number) + '], and return nan value.')
+        acm.show_exception_message('Having unexpected error for power calculation [' + str(number) + ', ' + str(base_number) + '], and return nan value.')
     return exponential_value
 
 
@@ -48,7 +48,7 @@ def check_whether_nan_value(number):  # tested
     try:
         return math.isnan(number)
     except:
-        aocm.show_exception_message('Having unexpected error[' + str(number) + '], and the data type is not number.')
+        acm.show_exception_message('Having unexpected error[' + str(number) + '], and the data type is not number.')
         return False
 
 
@@ -63,7 +63,7 @@ def get_decimal_value_position(number_value):
             position = position + 1
             number_value = number_value * 10
     except:
-        aocm.show_exception_message('Having unexpected error[' + str(number_value) + '], and the data type is not number.')
+        acm.show_exception_message('Having unexpected error[' + str(number_value) + '], and the data type is not number.')
     return position
 
 
@@ -74,5 +74,5 @@ def get_power_value_position(number_value):
             position = position + 1
             number_value = number_value / 10
     except:
-        aocm.show_exception_message('Having unexpected error[' + str(number_value) + '], and the data type is not number.')
+        acm.show_exception_message('Having unexpected error[' + str(number_value) + '], and the data type is not number.')
     return position
