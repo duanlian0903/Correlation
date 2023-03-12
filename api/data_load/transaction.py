@@ -1,13 +1,15 @@
-import api.common.data_type.file as acdtf
+import math
 
 
 def get_total_number_of_record_attribute():
     return 'total_number_of_record'
 
 
-def transform_into_dict_data(transaction_file_folder):
+def get_transaction_dict(transaction_file_folder, counted_number_of_record=math.inf):
     transaction_file = open(transaction_file_folder+'/transaction.txt', 'rt')
     transaction_file_lines = transaction_file.readlines()
+    if len(transaction_file_lines) > counted_number_of_record:
+        transaction_file_lines = transaction_file_lines[:counted_number_of_record]
     transaction_dict = {get_total_number_of_record_attribute(): len(transaction_file_lines)}
     for index in range(len(transaction_file_lines)):
         items_in_each_line = transaction_file_lines[index][:-1].split(',')
@@ -16,8 +18,7 @@ def transform_into_dict_data(transaction_file_folder):
                 transaction_dict[item].add(index)
             else:
                 transaction_dict[item] = set([index])
-        check = 1
-    acdtf.save_pickle_data(transaction_dict, transaction_file_folder + '/transaction_dict.pk', False)
+    return transaction_dict
 
 
 def get_item_frequency_dict(transaction_dict):
