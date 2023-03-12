@@ -36,7 +36,7 @@ def delete_file(file_name):  # tested
 def generate_folder_for_file(file_name):  # tested
     try:
         folder_list = file_name.split('/')[:-1]
-        current_path = ''
+        current_path = '.'
         if ':/' in file_name:
             current_path = folder_list[0]
             folder_list = folder_list[1:]
