@@ -1,5 +1,6 @@
 import math
 import api.analytics.descriptive.distribution.conversion_between_p_value_and_statistic_score as aaddcbpvass
+import api.analytics.descriptive.correlation.contingency_table_correction as aadcctc
 import scipy.stats as ss
 import numpy as np
 
@@ -203,6 +204,33 @@ def get_probability_difference_ratio_on_ecp(tcp, ecp, power_number=1.0):
 def get_probability_difference_ratio_on_ecp_with_continuity_correction(tcp, ecp, n, cc=0.5, power_number=1.0):
     return get_probability_difference_ratio_on_ecp(tcp + cc / n, ecp + cc / n, power_number)
 # end of not frequent measure
+
+
+def get_correlation_degree_for_pair(contingency_table_dict, correlation_type):
+    n = contingency_table_dict['n11'] + contingency_table_dict['n10'] + contingency_table_dict['n01'] + contingency_table_dict['n00']
+    tcp = contingency_table_dict['n11'] / n
+    ecp = (contingency_table_dict['n11'] + contingency_table_dict['n10']) / n * (contingency_table_dict['n11'] + contingency_table_dict['n01']) / n
+    if correlation_type == "Added Value":
+        return get_added_value(contingency_table_dict)
+    elif correlation_type == "Conviction":
+        return get_conviction(contingency_table_dict)
+    elif correlation_type == "Phi Coefficient":
+        return get_phi_coefficient(contingency_table_dict)
+    elif correlation_type == "Probability Difference":
+        return get_probability_difference(tcp, ecp)
+    elif correlation_type == "Probability Ratio":
+        return get_probability_ratio(tcp, ecp)
+    elif correlation_type == "Odds Ratio":
+        return get_odds_ratio(contingency_table_dict)
+    elif correlation_type == "Relative Risk":
+        return get_relative_risk(contingency_table_dict)
+    else:
+        return None
+
+
+def get_error_corrected_correlation_degree_for_pair(contingency_table_dict, correlation_type, alpha):
+    corrected_contingency_table_dict = aadcctc.get_corrected_contingency_table_dict(contingency_table_dict, alpha)
+    return get_correlation_degree_for_pair(corrected_contingency_table_dict, correlation_type)
 
 
 # begin of summary
