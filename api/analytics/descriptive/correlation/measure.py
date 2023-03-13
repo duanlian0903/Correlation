@@ -48,31 +48,6 @@ def get_probability_difference_confidence_interval(tcp, ecp, n, alpha):
     return [get_probability_difference(tcp_confidence_interval[0], ecp), get_probability_difference(tcp_confidence_interval[1], ecp)]
 
 
-# begin of not frequent measure
-def get_probability_difference_ratio_on_tcp(tcp, ecp, power_number=1.0):
-    probability_difference_ratio = -math.inf
-    if tcp != 0:
-        probability_difference_ratio = get_probability_difference(tcp, ecp) / (tcp ** power_number)
-    return probability_difference_ratio
-
-
-def get_probability_difference_ratio_on_tcp_with_continuity_correction(tcp, ecp, n, cc=0.5, power_number=1.0):
-    return get_probability_difference_ratio_on_tcp(tcp + cc / n, ecp + cc / n, power_number)
-
-
-def get_probability_difference_ratio_on_ecp(tcp, ecp, power_number=1.0):
-    # power_number can be 1/itemset_size to adjust.
-    probability_difference_ratio = 0
-    if ecp != 0:
-        probability_difference_ratio = get_probability_difference(tcp, ecp) / (ecp ** power_number)
-    return probability_difference_ratio
-
-
-def get_probability_difference_ratio_on_ecp_with_continuity_correction(tcp, ecp, n, cc=0.5, power_number=1.0):
-    return get_probability_difference_ratio_on_ecp(tcp + cc / n, ecp + cc / n, power_number)
-# end of not frequent measure
-
-
 def get_two_way_support(tcp, ecp):
     two_way_support = 0
     if whether_within_probability_range(tcp) & whether_within_probability_range(ecp):
@@ -138,6 +113,7 @@ def get_relative_risk(contingency_table_dict):
 
 
 def get_relative_risk_confidence_interval(contingency_table_dict, alpha):
+    # wald correction
     z_score = aaddcbpvass.get_z_score_from_p_value(alpha / 2)
     try:
         se = (contingency_table_dict['n10'] / ((contingency_table_dict['n11'] + contingency_table_dict['n10']) * contingency_table_dict['n11']) + contingency_table_dict['n00'] / ((contingency_table_dict['n01'] + contingency_table_dict['n00']) * contingency_table_dict['n01'])) ** 0.5
@@ -155,6 +131,7 @@ def get_odds_ratio(contingency_table_dict):
 
 
 def get_odds_ratio_confidence_interval(contingency_table_dict, alpha):
+    # wald correction
     z_score = aaddcbpvass.get_z_score_from_p_value(alpha / 2)
     try:
         se = (1/contingency_table_dict['n11']+1/contingency_table_dict['n10']+1/contingency_table_dict['n01']+1/contingency_table_dict['n00']) ** 0.5
@@ -162,15 +139,6 @@ def get_odds_ratio_confidence_interval(contingency_table_dict, alpha):
         return [odds_ratio/math.exp(z_score*se), odds_ratio*math.exp(z_score*se)]
     except:
         return [1, 1]
-
-
-def get_correlation_degree_confidence_interval_point_estimation(correlation_degree_confidence_interval, independent_value):
-    point_estimation = independent_value
-    if independent_value < correlation_degree_confidence_interval[0]:
-        point_estimation = correlation_degree_confidence_interval[0]
-    elif independent_value > correlation_degree_confidence_interval[1]:
-        point_estimation = correlation_degree_confidence_interval[1]
-    return point_estimation
 
 
 def get_phi_coefficient(contingency_table_dict):
@@ -181,10 +149,10 @@ def get_phi_coefficient(contingency_table_dict):
 
 
 def get_phi_coefficient_confidence_interval(contingency_table_dict, alpha):
+    # Fisher transformation
     try:
         r = get_phi_coefficient(contingency_table_dict)
         n = contingency_table_dict['n11'] + contingency_table_dict['n00'] + contingency_table_dict['n10'] + contingency_table_dict['n01']
-        # we use Fisher transformation
         r_z = np.arctanh(r)
         se = 1/np.sqrt(n-3)
         z = ss.norm.ppf(1-alpha/2)
@@ -203,6 +171,41 @@ def get_conviction(contingency_table_dict):
         return 1
 
 
+def get_correlation_degree_confidence_interval_point_estimation(correlation_degree_confidence_interval, independent_value):
+    point_estimation = independent_value
+    if independent_value < correlation_degree_confidence_interval[0]:
+        point_estimation = correlation_degree_confidence_interval[0]
+    elif independent_value > correlation_degree_confidence_interval[1]:
+        point_estimation = correlation_degree_confidence_interval[1]
+    return point_estimation
+
+
+# begin of not frequent measure
+def get_probability_difference_ratio_on_tcp(tcp, ecp, power_number=1.0):
+    probability_difference_ratio = -math.inf
+    if tcp != 0:
+        probability_difference_ratio = get_probability_difference(tcp, ecp) / (tcp ** power_number)
+    return probability_difference_ratio
+
+
+def get_probability_difference_ratio_on_tcp_with_continuity_correction(tcp, ecp, n, cc=0.5, power_number=1.0):
+    return get_probability_difference_ratio_on_tcp(tcp + cc / n, ecp + cc / n, power_number)
+
+
+def get_probability_difference_ratio_on_ecp(tcp, ecp, power_number=1.0):
+    # power_number can be 1/itemset_size to adjust.
+    probability_difference_ratio = 0
+    if ecp != 0:
+        probability_difference_ratio = get_probability_difference(tcp, ecp) / (ecp ** power_number)
+    return probability_difference_ratio
+
+
+def get_probability_difference_ratio_on_ecp_with_continuity_correction(tcp, ecp, n, cc=0.5, power_number=1.0):
+    return get_probability_difference_ratio_on_ecp(tcp + cc / n, ecp + cc / n, power_number)
+# end of not frequent measure
+
+
+# begin of summary
 def get_pair_correlation_type_list():
     return ["Added Value", "Relative Risk", "Odds Ratio", "Phi Coefficient", "Conviction"]
 
@@ -273,6 +276,8 @@ def get_pair_correlation(contingency_table_dict, correlation_type, cc=0.5):
         return get_correlation_score_only_for_pair(contingency_table_dict, correlation_type)
     else:
         return None
+# end of summary
+
 
 '''
 a = get_relative_risk_confidence_interval({'n11': 9, 'n10': 41, 'n01': 20, 'n00': 29}, 0.025)
