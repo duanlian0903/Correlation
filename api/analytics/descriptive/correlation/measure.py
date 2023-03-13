@@ -15,7 +15,7 @@ def get_tcp_confidence_interval(tcp, n, alpha):
     if whether_within_probability_range(tcp) & whether_within_probability_range(alpha):
         z_score = aaddcbpvass.get_z_score_from_p_value(alpha / 2)
         se = (tcp*(1-tcp)/n) ** 0.5
-        return [tcp-z_score*se, tcp+z_score*se]
+        return [max(0, tcp-z_score*se), min(1, tcp+z_score*se)]
     else:
         return [math.nan, math.nan]
 
@@ -37,7 +37,10 @@ def get_bcpnn(tcp, ecp, n, cc=0.5):
 
 
 def get_probability_difference(tcp, ecp):
-    return tcp - ecp
+    probability_difference = 0
+    if whether_within_probability_range(tcp) & whether_within_probability_range(ecp):
+        probability_difference = tcp - ecp
+    return probability_difference
 
 
 def get_probability_difference_confidence_interval(tcp, ecp, n, alpha):
@@ -72,11 +75,12 @@ def get_probability_difference_ratio_on_ecp_with_continuity_correction(tcp, ecp,
 
 def get_two_way_support(tcp, ecp):
     two_way_support = 0
-    if ecp != 0:
-        if tcp == 0:
-            two_way_support = 0
-        else:
-            two_way_support = tcp * math.log(tcp / ecp)
+    if whether_within_probability_range(tcp) & whether_within_probability_range(ecp):
+        if ecp != 0:
+            if tcp == 0:
+                two_way_support = 0
+            else:
+                two_way_support = tcp * math.log(tcp / ecp)
     return two_way_support
 
 
