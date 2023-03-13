@@ -86,24 +86,26 @@ def get_two_way_support(tcp, ecp):
 
 def get_likelihood_ratio(tcp, ecp, n):
     likelihood_ratio = 0
-    if (ecp != 0) & (ecp != 1):
-        delta = 0.0001
-        if tcp == 0:
-            tcp = delta / n
-        if tcp == 1:
-            tcp = 1 - delta / n
-        likelihood_ratio = tcp * n * math.log(tcp / ecp) + (1 - tcp) * n * math.log((1 - tcp) / (1 - ecp))
-        if tcp < ecp:
-            likelihood_ratio = -likelihood_ratio
+    if whether_within_probability_range(tcp) & whether_within_probability_range(ecp):
+        if (ecp != 0) & (ecp != 1):
+            delta = 0.0001
+            if tcp == 0:
+                tcp = delta / n
+            if tcp == 1:
+                tcp = 1 - delta / n
+            likelihood_ratio = tcp * n * math.log(tcp / ecp) + (1 - tcp) * n * math.log((1 - tcp) / (1 - ecp))
+            if tcp < ecp:
+                likelihood_ratio = -likelihood_ratio
     return likelihood_ratio
 
 
 def get_chi_square(tcp, ecp, n):
     chi_square = 0
-    if ecp != 0:
-        chi_square = n * (tcp - ecp) * (tcp - ecp) / ecp
-        if tcp < ecp:
-            chi_square = -chi_square
+    if whether_within_probability_range(tcp) & whether_within_probability_range(ecp):
+        if ecp != 0:
+            chi_square = n * (tcp - ecp) * (tcp - ecp) / ecp
+            if tcp < ecp:
+                chi_square = -chi_square
     return chi_square
 
 
