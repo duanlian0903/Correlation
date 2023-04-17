@@ -19,10 +19,14 @@ def get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_
 def get_corrected_n11_upperbound(item_frequency_dict, pair_tuple, target_p_value=0.05, delta=0.0001):
     # get related corrected n11 for a branch
     observed_prob = min(item_frequency_dict[pair_tuple[0]], item_frequency_dict[pair_tuple[1]])/item_frequency_dict['n']
-    return aocadcc.bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, item_frequency_dict['n'], target_p_value, delta)['lowerbound']
+    return aocadcc.bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, item_frequency_dict['n'], target_p_value, delta)['lowerbound']*item_frequency_dict['n']
 
 
-def get_pair_correlation_upperbound(item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+def get_pair_correlation_upperbound_with_corrected_n11_upperbound(corrected_n11_upperbound, item_frequency_dict, pair_tuple, correlation_type, cc=0.5):
+    return pair_correlation_function(corrected_n11_upperbound, item_frequency_dict, pair_tuple, correlation_type, cc=cc, whether_correct=False)
+
+
+def get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
     # get upperbound for a specific pair
     n11 = min(item_frequency_dict[pair_tuple[0]], item_frequency_dict[pair_tuple[1]])
     return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
@@ -40,7 +44,7 @@ def get_top_k_pairs_by_token_ring(transaction_dict, top_k, correlation_type, cc=
         for key in current_key_list:
             pair_tuple = (item_id_list[key], item_id_list[token_ring_dict[key]])
             if len(top_k_list) > 0:
-                pair_correlation_upperbound = get_pair_correlation_upperbound(item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
+                pair_correlation_upperbound = get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
                 if pair_correlation_upperbound > top_k_list[-1][1]:
                     # we start to calculate real correlation
                     pair_correlation_estimation = get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
