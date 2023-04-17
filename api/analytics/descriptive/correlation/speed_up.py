@@ -32,6 +32,24 @@ def get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tup
     return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
 
 
+def brute_force_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+    check = 1
+
+
+def upperbound_screen_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+    check = 1
+
+
+def branch_individual_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+    # we did the upperbound calculation for each pair in the queue
+    check = 1
+
+
+def branch_range_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+    # we get a range for the valid occurrence of given item
+    check = 1
+
+
 def get_top_k_pairs_by_token_ring(transaction_dict, top_k, correlation_type, cc=0.5, whether_correct=False, target_p_value=0.05, delta=0.0001):
     item_frequency_dict = aocadcd.get_item_frequency_dict(transaction_dict)
     item_id_list = list(aocdtldst.get_sorted_dict_by_value(item_frequency_dict).keys())[:-1]
