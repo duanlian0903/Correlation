@@ -20,24 +20,35 @@ def bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_pro
             'lowerbound': aaphis.get_target_input_value(target_p_value, likelihood_ratio_p_value_with_binomial_distribution_monotonic_function, observed_prob, 0, {'observed_prob': observed_prob, 'n': n}, delta)}
 
 
-def corrected_observed_prob_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, null_prob, n, target_p_value, delta=0.0001):
-    corrected_observed_prob = null_prob
+def corrected_observed_prob_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, null_prob, n, target_p_value, delta=0.0001, whether_speed_up_screen=True):
+    # make a slight correction for 0 occurrence case
     if observed_prob == 0:
         observed_prob = 0.1/n
-    if likelihood_ratio_p_value_with_binomial_distribution(observed_prob, null_prob, n) < target_p_value:
+    if whether_speed_up_screen:
+        if likelihood_ratio_p_value_with_binomial_distribution(observed_prob, null_prob, n) < target_p_value:
+            bound_dict = bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, n, target_p_value, delta)
+            if null_prob < bound_dict['lowerbound']:
+                corrected_observed_prob = bound_dict['lowerbound']
+            else:
+                corrected_observed_prob = bound_dict['upperbound']
+        else:
+            corrected_observed_prob = null_prob
+    else:
         bound_dict = bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, n, target_p_value, delta)
         if null_prob < bound_dict['lowerbound']:
             corrected_observed_prob = bound_dict['lowerbound']
-        else:
+        elif null_prob > bound_dict['upperbound']:
             corrected_observed_prob = bound_dict['upperbound']
+        else:
+            corrected_observed_prob = null_prob
     return corrected_observed_prob
 
 
-def get_corrected_contingency_table_dict(contingency_table_dict, target_p_value, delta=0.0001):
+def get_corrected_contingency_table_dict(contingency_table_dict, target_p_value, delta=0.0001, whether_speed_up_screen=True):
     n = contingency_table_dict['n11'] + contingency_table_dict['n10'] + contingency_table_dict['n01'] + contingency_table_dict['n00']
     ocp = contingency_table_dict['n11'] / n
     ecp = (contingency_table_dict['n11'] + contingency_table_dict['n10']) / n * (contingency_table_dict['n11'] + contingency_table_dict['n01']) / n
-    corrected_ocp = corrected_observed_prob_for_likelihood_ratio_test_with_binomial_distribution(ocp, ecp, n, target_p_value, delta)
+    corrected_ocp = corrected_observed_prob_for_likelihood_ratio_test_with_binomial_distribution(ocp, ecp, n, target_p_value, delta, whether_speed_up_screen)
     return {'n11': corrected_ocp*n, 'n10': contingency_table_dict['n11'] + contingency_table_dict['n10'] - corrected_ocp * n,
             'n01': contingency_table_dict['n11'] + contingency_table_dict['n01'] - corrected_ocp * n, 'n00': contingency_table_dict['n00'] - contingency_table_dict['n11'] + corrected_ocp * n}
 

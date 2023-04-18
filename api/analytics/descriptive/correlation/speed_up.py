@@ -4,16 +4,16 @@ import api.analytics.descriptive.correlation.measure as aocadcm
 import api.common.data_type.list_dict_set_tuple as aocdtldst
 
 
-def pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+def pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     contingency_table_dict = {'n11': n11, 'n10': item_frequency_dict[pair_tuple[0]]-n11, 'n01': item_frequency_dict[pair_tuple[1]]-n11, 'n00': item_frequency_dict['n'] - item_frequency_dict[pair_tuple[0]] - item_frequency_dict[pair_tuple[1]] + n11}
     if whether_correct:
-        contingency_table_dict = aocadcc.get_corrected_contingency_table_dict(contingency_table_dict, target_p_value, delta)
+        contingency_table_dict = aocadcc.get_corrected_contingency_table_dict(contingency_table_dict, target_p_value, delta, whether_speed_up_screen)
     return aocadcm.get_pair_correlation(contingency_table_dict, correlation_type, cc)
 
 
-def get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+def get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     n11 = aocadcd.get_itemset_frequency(transaction_dict, pair_tuple)
-    return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
+    return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
 
 
 def get_corrected_n11_upperbound(item_frequency_dict, pair_tuple, target_p_value=0.05, delta=0.0001):
@@ -83,10 +83,10 @@ def get_top_k_pairs_by_token_ring(transaction_dict, top_k, correlation_type, cc=
 
 item_frequency_dict={'a': 100, 'b': 200, 'n': 1000}
 pair_tuple=['a', 'b']
-correlation_type = 'Probability Difference'
+correlation_type = 'Odds Ratio'
 #corrected_n11_upperbound = get_corrected_n11_upperbound(item_frequency_dict, pair_tuple)
 #X1 = get_pair_correlation_upperbound_with_corrected_n11_upperbound(corrected_n11_upperbound, item_frequency_dict, pair_tuple, correlation_type)
 #X2 = get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type)
-transaction_dict = {'a': set(range(0, 100)), 'b': set(range(100, 300))}
-y1 = get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type)
+transaction_dict = {'a': set(range(0, 100)), 'b': set(range(80, 280))}
+y1 = get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, whether_speed_up_screen=False)
 check = 1
