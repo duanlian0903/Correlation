@@ -79,3 +79,14 @@ def get_top_k_pairs_by_token_ring(transaction_dict, top_k, correlation_type, cc=
                 top_k_list.append((pair_tuple, get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)))
                 token_ring_dict[key] = token_ring_dict[key] + 1
     return top_k_list
+
+
+item_frequency_dict={'a': 100, 'b': 200, 'n': 1000}
+pair_tuple=['a', 'b']
+correlation_type = 'Probability Difference'
+#corrected_n11_upperbound = get_corrected_n11_upperbound(item_frequency_dict, pair_tuple)
+#X1 = get_pair_correlation_upperbound_with_corrected_n11_upperbound(corrected_n11_upperbound, item_frequency_dict, pair_tuple, correlation_type)
+#X2 = get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type)
+transaction_dict = {'a': set(range(0, 100)), 'b': set(range(100, 300))}
+y1 = get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type)
+check = 1

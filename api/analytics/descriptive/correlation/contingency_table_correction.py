@@ -22,6 +22,8 @@ def bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_pro
 
 def corrected_observed_prob_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, null_prob, n, target_p_value, delta=0.0001):
     corrected_observed_prob = null_prob
+    if observed_prob == 0:
+        observed_prob = 0.1/n
     if likelihood_ratio_p_value_with_binomial_distribution(observed_prob, null_prob, n) < target_p_value:
         bound_dict = bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, n, target_p_value, delta)
         if null_prob < bound_dict['lowerbound']:
