@@ -5,7 +5,7 @@ import api.common.data_type.list_dict_set_tuple as aocdtldst
 
 
 def pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
-    contingency_table_dict = {'n11': n11, 'n10': item_frequency_dict[pair_tuple[0]]-n11, 'n01': item_frequency_dict[pair_tuple[1]]-n11, 'n00': item_frequency_dict['n'] - item_frequency_dict[pair_tuple[0]] - item_frequency_dict[pair_tuple[1]] + n11}
+    contingency_table_dict = {'n11': n11, 'n10': item_frequency_dict[pair_tuple[0]]-n11, 'n01': item_frequency_dict[pair_tuple[1]]-n11, 'n00': item_frequency_dict['total_number_of_record'] - item_frequency_dict[pair_tuple[0]] - item_frequency_dict[pair_tuple[1]] + n11}
     if whether_correct:
         contingency_table_dict = aocadcc.get_corrected_contingency_table_dict(contingency_table_dict, target_p_value, delta, whether_speed_up_screen)
     return aocadcm.get_pair_correlation(contingency_table_dict, correlation_type, cc)
@@ -18,8 +18,8 @@ def get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_
 
 def get_corrected_n11_upperbound(item_frequency_dict, pair_tuple, target_p_value=0.05, delta=0.0001):
     # get related corrected n11 for a branch
-    observed_prob = min(item_frequency_dict[pair_tuple[0]], item_frequency_dict[pair_tuple[1]])/item_frequency_dict['n']
-    return aocadcc.bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, item_frequency_dict['n'], target_p_value, delta)['lowerbound']*item_frequency_dict['n']
+    observed_prob = min(item_frequency_dict[pair_tuple[0]], item_frequency_dict[pair_tuple[1]])/item_frequency_dict['total_number_of_record']
+    return aocadcc.bound_dict_for_likelihood_ratio_test_with_binomial_distribution(observed_prob, item_frequency_dict['total_number_of_record'], target_p_value, delta)['lowerbound']*item_frequency_dict['total_number_of_record']
 
 
 def get_pair_correlation_upperbound_with_corrected_n11_upperbound(corrected_n11_upperbound, item_frequency_dict, pair_tuple, correlation_type, cc=0.5):
@@ -30,24 +30,6 @@ def get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tup
     # get upperbound for a specific pair
     n11 = min(item_frequency_dict[pair_tuple[0]], item_frequency_dict[pair_tuple[1]])
     return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
-
-
-def brute_force_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
-    check = 1
-
-
-def upperbound_screen_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
-    check = 1
-
-
-def branch_individual_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
-    # we did the upperbound calculation for each pair in the queue
-    check = 1
-
-
-def branch_range_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
-    # we get a range for the valid occurrence of given item
-    check = 1
 
 
 def get_top_k_pairs_by_token_ring(transaction_dict, top_k, correlation_type, cc=0.5, whether_correct=False, target_p_value=0.05, delta=0.0001):
@@ -79,14 +61,3 @@ def get_top_k_pairs_by_token_ring(transaction_dict, top_k, correlation_type, cc=
                 top_k_list.append((pair_tuple, get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)))
                 token_ring_dict[key] = token_ring_dict[key] + 1
     return top_k_list
-
-
-item_frequency_dict={'a': 100, 'b': 200, 'n': 1000}
-pair_tuple=['a', 'b']
-correlation_type = 'Odds Ratio'
-#corrected_n11_upperbound = get_corrected_n11_upperbound(item_frequency_dict, pair_tuple)
-#X1 = get_pair_correlation_upperbound_with_corrected_n11_upperbound(corrected_n11_upperbound, item_frequency_dict, pair_tuple, correlation_type)
-#X2 = get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type)
-transaction_dict = {'a': set(range(0, 100)), 'b': set(range(80, 280))}
-y1 = get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, whether_speed_up_screen=False)
-check = 1
