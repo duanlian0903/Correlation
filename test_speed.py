@@ -14,10 +14,11 @@ def brute_force_search(transaction_dict, correlation_type, correlation_threshold
     adr_list = []
     result = []
     for item_key in item_frequency_dict:
-        if item_key[0] == 'd':
-            drug_list.append(item_key)
-        if item_key[0] == 'a':
-            adr_list.append(item_key)
+        if len(item_key) > 0:
+            if item_key[0] == 'd':
+                drug_list.append(item_key)
+            if item_key[0] == 'a':
+                adr_list.append(item_key)
     drug_list = sorted(drug_list)
     adr_list = sorted(adr_list)
     speed_up_count = 0
@@ -82,20 +83,21 @@ def branch_range_search(transaction_dict, correlation_type, cc=0.5, whether_corr
 
 def test_adr_simulation_data():
     tran_dict = adlt.get_transaction_dict('data/simulation/adr', 1000000)
-    small_tran_dict = {}
+    test_tran_dict = {}
     for key in tran_dict:
         if len(key) > 0:
             if (key[0] == 'a') | (key[0] == 'd'):
                 if int(key[1:]) < 500:
-                    small_tran_dict[key] = tran_dict[key]
+                    test_tran_dict[key] = tran_dict[key]
             else:
-                small_tran_dict[key] = tran_dict[key]
+                test_tran_dict[key] = tran_dict[key]
+    test_tran_dict = tran_dict
     correlation_type = 'Relative Risk'
     correlation_threshold = 100
-    brute_force_search(small_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    #brute_force_search(small_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
-    #upperbound_screen_search(small_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    #upperbound_screen_search(small_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
+    brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
+    brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
+    upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
+    upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
 
 
 test_adr_simulation_data()
