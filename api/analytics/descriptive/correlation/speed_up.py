@@ -26,10 +26,10 @@ def get_pair_correlation_upperbound_with_corrected_n11_upperbound(corrected_n11_
     return pair_correlation_function(corrected_n11_upperbound, item_frequency_dict, pair_tuple, correlation_type, cc=cc, whether_correct=False)
 
 
-def get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+def get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     # get upperbound for a specific pair
     n11 = min(item_frequency_dict[pair_tuple[0]], item_frequency_dict[pair_tuple[1]])
-    return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta)
+    return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
 
 
 def get_top_k_pairs_by_token_ring(transaction_dict, top_k, correlation_type, cc=0.5, whether_correct=False, target_p_value=0.05, delta=0.0001):
