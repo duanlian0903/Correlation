@@ -46,10 +46,11 @@ def upperbound_screen_search(transaction_dict, correlation_type, correlation_thr
     adr_list = []
     result = []
     for item_key in item_frequency_dict:
-        if item_key[0] == 'd':
-            drug_list.append(item_key)
-        if item_key[0] == 'a':
-            adr_list.append(item_key)
+        if len(item_key) > 0:
+            if item_key[0] == 'd':
+                drug_list.append(item_key)
+            if item_key[0] == 'a':
+                adr_list.append(item_key)
     drug_list = sorted(drug_list)
     adr_list = sorted(adr_list)
     count_upperbound = 0
