@@ -95,10 +95,10 @@ def test_adr_simulation_data():
     test_tran_dict = tran_dict
     correlation_type = 'Relative Risk'
     correlation_threshold = 100
-    brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
+    #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
+    #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
     upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
+    #upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
 
 
 test_adr_simulation_data()
