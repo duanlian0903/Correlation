@@ -16,6 +16,10 @@ def get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_
     return pair_correlation_function(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
 
 
+def get_relaxed_correlation_upperbound(item_frequency_dict, pair_tuple, correlation_type, cc=0.5):
+    return get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct=False)
+
+
 def get_corrected_n11_upperbound(item_frequency_dict, pair_tuple, target_p_value=0.05, delta=0.0001):
     # get related corrected n11 for a branch
     observed_prob = min(item_frequency_dict[pair_tuple[0]], item_frequency_dict[pair_tuple[1]])/item_frequency_dict['total_number_of_record']
