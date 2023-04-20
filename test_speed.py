@@ -130,6 +130,7 @@ def test_adr_simulation_data():
     #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
     #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
     relaxed_upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
+    upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
     #upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
 
 
