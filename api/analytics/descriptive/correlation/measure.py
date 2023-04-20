@@ -108,7 +108,10 @@ def get_added_value_confidence_interval(contingency_table_dict, alpha):
 
 def get_relative_risk(contingency_table_dict):
     try:
-        return (contingency_table_dict['n11'] * (contingency_table_dict['n01'] + contingency_table_dict['n00'])) / (contingency_table_dict['n01'] * (contingency_table_dict['n11'] + contingency_table_dict['n10']))
+        if contingency_table_dict['n01'] == 0:
+            return math.inf
+        else:
+            return (contingency_table_dict['n11'] * (contingency_table_dict['n01'] + contingency_table_dict['n00'])) / (contingency_table_dict['n01'] * (contingency_table_dict['n11'] + contingency_table_dict['n10']))
     except:
         return 1
 
@@ -126,7 +129,10 @@ def get_relative_risk_confidence_interval(contingency_table_dict, alpha):
 
 def get_odds_ratio(contingency_table_dict):
     try:
-        return (contingency_table_dict['n11'] * contingency_table_dict['n00']) / (contingency_table_dict['n10'] * contingency_table_dict['n01'])
+        if (contingency_table_dict['n01'] == 0) | (contingency_table_dict['n10'] == 0):
+            return math.inf
+        else:
+            return (contingency_table_dict['n11'] * contingency_table_dict['n00']) / (contingency_table_dict['n10'] * contingency_table_dict['n01'])
     except:
         return 1
 
