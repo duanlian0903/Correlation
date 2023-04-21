@@ -106,6 +106,8 @@ def branch_individual_search(transaction_dict, correlation_type, cc=0.5, whether
     # we did the upperbound calculation for each pair in the queue
     item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
     sorted_item_frequency_dict = acdtldst.get_sorted_dict_by_value(item_frequency_dict)
+    item_list = sorted_item_frequency_dict.keys()
+
     check = 1
 
 
@@ -129,9 +131,9 @@ def test_adr_simulation_data():
     correlation_threshold = 100
     #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
     #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
-    relaxed_upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    #upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
+    #relaxed_upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
+    #upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
+    branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, )
 
 
 test_adr_simulation_data()
