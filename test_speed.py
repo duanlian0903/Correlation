@@ -102,13 +102,45 @@ def relaxed_upperbound_screen_search(transaction_dict, correlation_type, correla
     print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation)
 
 
-def branch_individual_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
+def branch_individual_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     # we did the upperbound calculation for each pair in the queue
+    begin = dt.datetime.now()
+    print(begin, 'start branch individual search')
     item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
     sorted_item_frequency_dict = acdtldst.get_sorted_dict_by_value(item_frequency_dict)
-    item_list = sorted_item_frequency_dict.keys()
-
-    check = 1
+    item_list = list(sorted_item_frequency_dict.keys())
+    item_list.remove('')
+    item_list.remove('total_number_of_record')
+    count_upperbound = 0
+    count_estimation = 0
+    result = []
+    for i in range(len(item_list)-1):
+        first_item = item_list[i]
+        j = i + 1
+        while j < len(item_list):
+            second_item = item_list[j]
+            if first_item[0] != second_item[0]:
+                if first_item[0] == 'd':
+                    pair_tuple = [first_item, second_item]
+                else:
+                    pair_tuple = [second_item, first_item]
+                count_upperbound = count_upperbound + 1
+                if whether_relaxed_upperbound:
+                    upperbound = aadcsu.get_relaxed_correlation_upperbound(item_frequency_dict, pair_tuple, correlation_type, cc)
+                else:
+                    upperbound = aadcsu.get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                if upperbound < correlation_threshold:
+                    j = len(item_list)
+                else:
+                    count_estimation = count_estimation + 1
+                    correlation_estimation = aadcsu.get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                    if correlation_estimation > correlation_threshold:
+                        result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
+                        print(result[-1])
+            j = j + 1
+    end = dt.datetime.now()
+    print(end, 'end branch individual search')
+    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation)
 
 
 def branch_range_search(transaction_dict, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001):
@@ -133,7 +165,8 @@ def test_adr_simulation_data():
     #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
     #relaxed_upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
     #upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, )
+    branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True)
+    branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False)
 
 
 test_adr_simulation_data()
