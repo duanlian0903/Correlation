@@ -26,7 +26,7 @@ def brute_force_search(transaction_dict, correlation_type, correlation_threshold
     non_speed_up_count = 0
     for drug in drug_list:
         for adr in adr_list:
-            correlation_estimation = aadcsu.get_pair_correlation_estimation(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+            correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
             if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
                 non_speed_up_count = non_speed_up_count + 1
             else:
@@ -65,7 +65,7 @@ def upperbound_screen_search(transaction_dict, correlation_type, correlation_thr
                 correlation_upperbound = aadcsu.get_pair_correlation_upperbound_with_raw_value(item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
             if correlation_upperbound > correlation_threshold:
                 count_estimation = count_estimation + 1
-                correlation_estimation = aadcsu.get_pair_correlation_estimation(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                 if correlation_estimation > correlation_threshold:
                     result.append([drug, adr, correlation_estimation])
                     print(result[-1])
@@ -107,7 +107,7 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
                     j = len(item_list)
                 else:
                     count_estimation = count_estimation + 1
-                    correlation_estimation = aadcsu.get_pair_correlation_estimation(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                    correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                     if correlation_estimation > correlation_threshold:
                         result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
                         print(result[-1])
