@@ -81,8 +81,10 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
     item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
     sorted_item_frequency_dict = acdtldst.get_sorted_dict_by_value(item_frequency_dict)
     item_list = list(sorted_item_frequency_dict.keys())
-    item_list.remove('')
-    item_list.remove('total_number_of_record')
+    if '' in item_list:
+        item_list.remove('')
+    if 'total_number_of_record' in item_list:
+        item_list.remove('total_number_of_record')
     count_upperbound = 0
     count_estimation = 0
     result = []
@@ -126,19 +128,19 @@ def test_adr_simulation_data():
     for key in tran_dict:
         if len(key) > 0:
             if (key[0] == 'a') | (key[0] == 'd'):
-                if int(key[1:]) < 500:
+                if int(key[1:]) < 100:
                     test_tran_dict[key] = tran_dict[key]
             else:
                 test_tran_dict[key] = tran_dict[key]
-    test_tran_dict = tran_dict
+    #test_tran_dict = tran_dict
     correlation_type = 'Probability Difference' # 'Relative Risk'
-    correlation_threshold = 0.001
-    #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
-    #brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
+    correlation_threshold = 0.0001
+    brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
+    brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=False)
     upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True)
-    #upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False)
+    upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False)
     branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True)
-    #branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False)
+    branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False)
 
 
 test_adr_simulation_data()
