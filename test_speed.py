@@ -164,16 +164,16 @@ def test_adr_simulation_data():
                     test_tran_dict[key] = tran_dict[key]
             else:
                 test_tran_dict[key] = tran_dict[key]
-    #test_tran_dict = tran_dict
+    test_tran_dict = tran_dict
     correlation_type = 'Relative Risk'
-    correlation_threshold = 5
-    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True)
-    print()
-    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=False)
-    print()
+    correlation_threshold = 8000
     branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=True)
     print()
     branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=False)
+    print()
+    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True)
+    print()
+    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=False)
     print()
     brute_force_search(test_tran_dict, correlation_type, correlation_threshold, whether_speed_up_screen=True)
     print()
