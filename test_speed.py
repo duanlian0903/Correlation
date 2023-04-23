@@ -106,9 +106,9 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
     print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation)
 
 
-def branch_range_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+def branch_range_search(transaction_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     begin = dt.datetime.now()
-    print(begin, 'start branch range search with relaxed upperbound', whether_relaxed_upperbound)
+    print(begin, 'start branch range search with relaxed upperbound', whether_relaxed_upperbound, 'and general half search', whether_general_half_search)
     item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
     sorted_item_frequency_dict = acdtldst.get_sorted_dict_by_value(item_frequency_dict)
     item_list = list(sorted_item_frequency_dict.keys())
@@ -126,9 +126,15 @@ def branch_range_search(transaction_dict, correlation_type, correlation_threshol
             occurrence_threshold = item_frequency_dict['total_number_of_record'] + 1
         else:
             if first_item[0] == 'd':
-                occurrence_threshold = aadcsu.get_outcome_range(item_frequency_dict[first_item], item_frequency_dict['total_number_of_record'], correlation_type, correlation_threshold*0.99, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                if whether_general_half_search:
+                    occurrence_threshold = aadcsu.get_outcome_range_by_half_search(item_frequency_dict[first_item], item_frequency_dict['total_number_of_record'], correlation_type, correlation_threshold * 0.99, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                else:
+                    occurrence_threshold = aadcsu.get_outcome_range_by_formula(item_frequency_dict[first_item], item_frequency_dict['total_number_of_record'], correlation_type, correlation_threshold, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
             else:
-                occurrence_threshold = aadcsu.get_intervention_range(item_frequency_dict[first_item], item_frequency_dict['total_number_of_record'], correlation_type, correlation_threshold*0.99, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                if whether_general_half_search:
+                    occurrence_threshold = aadcsu.get_intervention_range_by_half_search(item_frequency_dict[first_item], item_frequency_dict['total_number_of_record'], correlation_type, correlation_threshold * 0.99, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                else:
+                    occurrence_threshold = aadcsu.get_intervention_range_by_formula(item_frequency_dict[first_item], item_frequency_dict['total_number_of_record'], correlation_type, correlation_threshold, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
         j = i + 1
         while j < len(item_list):
             second_item = item_list[j]
@@ -173,9 +179,14 @@ def test_adr_simulation_data():
     print()
     branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False)
     print()
-    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True)
+    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True)
     print()
-    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False)
+    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=False)
+    print()
+    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=True)
+    print()
+    branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=False)
+    print()
 
 
 test_adr_simulation_data()

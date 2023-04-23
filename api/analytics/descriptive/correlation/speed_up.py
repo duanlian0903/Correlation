@@ -3,6 +3,7 @@ import api.analytics.descriptive.correlation.contingency_table_correction as aoc
 import api.analytics.descriptive.correlation.measure as aocadcm
 import api.common.data_type.list_dict_set_tuple as aocdtldst
 import api.analytics.prescriptive.half_interval_search as aaphis
+import math
 
 
 def get_pair_correlation_estimation_with_given_n11(n11, item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
@@ -15,6 +16,10 @@ def get_pair_correlation_estimation_with_given_n11(n11, item_frequency_dict, pai
 def get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     n11 = aocadcd.get_itemset_frequency(transaction_dict, pair_tuple)
     return get_pair_correlation_estimation_with_given_n11(n11, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+
+
+def get_lowerbound_of_given_k(k, n, target_p_value=0.05, delta=0.0001):
+    return aocadcc.bound_dict_for_likelihood_ratio_test_with_binomial_distribution(k/n, n, target_p_value, delta)['lowerbound'] * n
 
 
 def get_n11_upperbound(item_frequency_dict, pair_tuple, target_p_value=0.05, delta=0.0001, whether_relaxed_upperbound=False):
@@ -64,7 +69,7 @@ def monotonic_function_for_outcome_range_search(tested_outcome_occurrence, other
     return get_pair_correlation_upperbound_with_given_intervention_and_outcome_occurrence(other_parameter_dict['intervention_occurrence'], tested_outcome_occurrence, other_parameter_dict['n'], other_parameter_dict['correlation_type'], other_parameter_dict['cc'], other_parameter_dict['whether_correct'], other_parameter_dict['target_p_value'], other_parameter_dict['delta'], other_parameter_dict['whether_speed_up_screen'])
 
 
-def get_intervention_range(outcome_occurrence, n, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+def get_intervention_range_by_half_search(outcome_occurrence, n, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     if whether_relaxed_upperbound:
         if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(outcome_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
             intervention_range = outcome_occurrence
@@ -78,7 +83,7 @@ def get_intervention_range(outcome_occurrence, n, correlation_type, correlation_
     return intervention_range
 
 
-def get_outcome_range(intervention_occurrence, n, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+def get_outcome_range_by_half_search(intervention_occurrence, n, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
     if whether_relaxed_upperbound:
         if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(intervention_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
             outcome_range = intervention_occurrence
@@ -89,6 +94,50 @@ def get_outcome_range(intervention_occurrence, n, correlation_type, correlation_
             outcome_range = intervention_occurrence
         else:
             outcome_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_outcome_range_search, n, intervention_occurrence, {'intervention_occurrence': intervention_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': whether_correct, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta, whether_manual_monotonic=True, whether_manual_increase=False)
+    return outcome_range
+
+
+def get_intervention_range_by_formula(outcome_occurrence, n, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+    if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(outcome_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
+        intervention_range = outcome_occurrence
+    else:
+        if whether_relaxed_upperbound:
+            n11 = outcome_occurrence
+        else:
+            n11 = get_lowerbound_of_given_k(outcome_occurrence, n, target_p_value, delta)
+        intervention_range = math.inf
+        if correlation_type == 'Probability Difference':
+            intervention_range = (n * n11 - n * n * correlation_threshold)/outcome_occurrence
+        elif correlation_type == 'Probability Ratio':
+            intervention_range = (n * n11)/(correlation_threshold * outcome_occurrence)
+        elif correlation_type == 'Added Value':
+            intervention_range = (n * n11)/(correlation_threshold * n + outcome_occurrence)
+        elif correlation_type == 'Relative Risk':
+            intervention_range = n11 * n /(n11 + correlation_threshold * (outcome_occurrence - n11))
+        elif correlation_type == 'Odds Ratio':
+            intervention_range = (n11 * n + n11 * n11 - n11 * outcome_occurrence + correlation_threshold * n11 * outcome_occurrence - correlation_threshold * n11 * n11)/(correlation_threshold * outcome_occurrence - correlation_threshold * n11 + n11)
+    return intervention_range
+
+
+def get_outcome_range_by_formula(intervention_occurrence, n, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+    if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(intervention_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
+        outcome_range = intervention_occurrence
+    else:
+        if whether_relaxed_upperbound:
+            n11 = intervention_occurrence
+        else:
+            n11 = get_lowerbound_of_given_k(intervention_occurrence, n, target_p_value, delta)
+        outcome_range = math.inf
+        if correlation_type == 'Probability Difference':
+            outcome_range = (n * n11 - n * n * correlation_threshold)/intervention_occurrence
+        elif correlation_type == 'Probability Ratio':
+            outcome_range = (n * n11)/(correlation_threshold * intervention_occurrence)
+        elif correlation_type == 'Added Value':
+            outcome_range = n * n11 / intervention_occurrence - correlation_threshold * n
+        elif correlation_type == 'Relative Risk':
+            outcome_range = n11 + n11 * (n - intervention_occurrence)/(intervention_occurrence * correlation_threshold)
+        elif correlation_type == 'Odds Ratio':
+            outcome_range = (n11 * n + n11 * n11 - n11 * intervention_occurrence + correlation_threshold * n11 * intervention_occurrence - correlation_threshold * n11 * n11)/(correlation_threshold * intervention_occurrence - correlation_threshold * n11 + n11)
     return outcome_range
 
 
