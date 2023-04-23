@@ -32,9 +32,9 @@ def brute_force_search(transaction_dict, correlation_type, correlation_threshold
                 speed_up_count = speed_up_count + 1
             if correlation_estimation > correlation_threshold:
                 result.append([drug, adr, correlation_estimation])
-                print(result[-1])
+                #print(result[-1])
     end = dt.datetime.now()
-    print('total time is', (end-begin).total_seconds(), '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count)
+    print('total time is', (end-begin).total_seconds(), '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
 
 
 def upperbound_screen_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
@@ -63,9 +63,9 @@ def upperbound_screen_search(transaction_dict, correlation_type, correlation_thr
                 correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                 if correlation_estimation > correlation_threshold:
                     result.append([drug, adr, correlation_estimation])
-                    print(result[-1])
+                    #print(result[-1])
     end = dt.datetime.now()
-    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation)
+    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. result len:', len(result))
 
 
 def branch_individual_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
@@ -100,10 +100,10 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
                     correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                     if correlation_estimation > correlation_threshold:
                         result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
-                        print(result[-1])
+                        #print(result[-1])
             j = j + 1
     end = dt.datetime.now()
-    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation)
+    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. result len:', len(result))
 
 
 def branch_range_search(transaction_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
@@ -148,10 +148,10 @@ def branch_range_search(transaction_dict, correlation_type, correlation_threshol
                     correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                     if correlation_estimation > correlation_threshold:
                         result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
-                        print(result[-1])
+                        #print(result[-1])
             j = j + 1
     end = dt.datetime.now()
-    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation)
+    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. result len:', len(result))
 
 
 def test_adr_simulation_data():
