@@ -55,10 +55,12 @@ def get_pair_correlation_upperbound_with_given_intervention_and_outcome_occurren
 
 
 def monotonic_function_for_intervention_range_search(tested_intervention_occurrence, other_parameter_dict):
+    check = get_pair_correlation_upperbound_with_given_intervention_and_outcome_occurrence(tested_intervention_occurrence, other_parameter_dict['outcome_occurrence'], other_parameter_dict['n'], other_parameter_dict['correlation_type'], other_parameter_dict['cc'], other_parameter_dict['whether_correct'], other_parameter_dict['target_p_value'], other_parameter_dict['delta'], other_parameter_dict['whether_speed_up_screen'])
     return get_pair_correlation_upperbound_with_given_intervention_and_outcome_occurrence(tested_intervention_occurrence, other_parameter_dict['outcome_occurrence'], other_parameter_dict['n'], other_parameter_dict['correlation_type'], other_parameter_dict['cc'], other_parameter_dict['whether_correct'], other_parameter_dict['target_p_value'], other_parameter_dict['delta'], other_parameter_dict['whether_speed_up_screen'])
 
 
 def monotonic_function_for_outcome_range_search(tested_outcome_occurrence, other_parameter_dict):
+    check = get_pair_correlation_upperbound_with_given_intervention_and_outcome_occurrence(other_parameter_dict['intervention_occurrence'], tested_outcome_occurrence, other_parameter_dict['n'], other_parameter_dict['correlation_type'], other_parameter_dict['cc'], other_parameter_dict['whether_correct'], other_parameter_dict['target_p_value'], other_parameter_dict['delta'], other_parameter_dict['whether_speed_up_screen'])
     return get_pair_correlation_upperbound_with_given_intervention_and_outcome_occurrence(other_parameter_dict['intervention_occurrence'], tested_outcome_occurrence, other_parameter_dict['n'], other_parameter_dict['correlation_type'], other_parameter_dict['cc'], other_parameter_dict['whether_correct'], other_parameter_dict['target_p_value'], other_parameter_dict['delta'], other_parameter_dict['whether_speed_up_screen'])
 
 
@@ -67,12 +69,12 @@ def get_intervention_range(outcome_occurrence, n, correlation_type, correlation_
         if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(outcome_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
             intervention_range = outcome_occurrence
         else:
-            intervention_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_intervention_range_search, outcome_occurrence, n-delta/n, {'outcome_occurrence': outcome_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': False, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta)
+            intervention_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_intervention_range_search, n, outcome_occurrence, {'outcome_occurrence': outcome_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': False, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta, whether_manual_monotonic=True, whether_manual_increase=False)
     else:
         if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(outcome_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
             intervention_range = outcome_occurrence
         else:
-            intervention_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_intervention_range_search, outcome_occurrence, n-delta/n, {'outcome_occurrence': outcome_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': whether_correct, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta)
+            intervention_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_intervention_range_search, n, outcome_occurrence, {'outcome_occurrence': outcome_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': whether_correct, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta, whether_manual_monotonic=True, whether_manual_increase=False)
     return intervention_range
 
 
@@ -81,12 +83,12 @@ def get_outcome_range(intervention_occurrence, n, correlation_type, correlation_
         if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(intervention_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
             outcome_range = intervention_occurrence
         else:
-            outcome_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_outcome_range_search, intervention_occurrence, n-delta/n, {'intervention_occurrence': intervention_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': False, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta)
+            outcome_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_outcome_range_search, n, intervention_occurrence, {'intervention_occurrence': intervention_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': False, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta, whether_manual_monotonic=True, whether_manual_increase=False)
     else:
         if correlation_threshold > get_pair_correlation_upperbound_with_given_single_item(intervention_occurrence, n, correlation_type, whether_relaxed_upperbound, cc, whether_correct, target_p_value, delta, whether_speed_up_screen):
             outcome_range = intervention_occurrence
         else:
-            outcome_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_outcome_range_search, intervention_occurrence, n-delta/n, {'intervention_occurrence': intervention_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': whether_correct, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta)
+            outcome_range = aaphis.get_target_input_value(correlation_threshold, monotonic_function_for_outcome_range_search, n, intervention_occurrence, {'intervention_occurrence': intervention_occurrence, 'n': n, 'correlation_type': correlation_type, 'cc': cc, 'whether_correct': whether_correct, 'target_p_value': target_p_value, 'delta': delta, 'whether_speed_up_screen': whether_speed_up_screen}, delta, whether_manual_monotonic=True, whether_manual_increase=False)
     return outcome_range
 
 
