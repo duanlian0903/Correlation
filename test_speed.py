@@ -52,6 +52,9 @@ def upperbound_screen_search(transaction_dict, correlation_type, correlation_thr
                 adr_list.append(item_key)
     drug_list = sorted(drug_list)
     adr_list = sorted(adr_list)
+    no_correlation_value = aadcm.get_pair_correlation({'n11': 25, 'n01': 25, 'n10': 25, 'n00': 25}, correlation_type)
+    speed_up_count = 0
+    non_speed_up_count = 0
     count_upperbound = 0
     count_estimation = 0
     for drug in drug_list:
@@ -61,11 +64,15 @@ def upperbound_screen_search(transaction_dict, correlation_type, correlation_thr
             if correlation_upperbound > correlation_threshold:
                 count_estimation = count_estimation + 1
                 correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
+                    non_speed_up_count = non_speed_up_count + 1
+                else:
+                    speed_up_count = speed_up_count + 1
                 if correlation_estimation > correlation_threshold:
                     result.append([drug, adr, correlation_estimation])
                     #print(result[-1])
     end = dt.datetime.now()
-    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. result len:', len(result))
+    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
 
 
 def branch_individual_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
@@ -78,6 +85,9 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
         item_list.remove('')
     if 'total_number_of_record' in item_list:
         item_list.remove('total_number_of_record')
+    no_correlation_value = aadcm.get_pair_correlation({'n11': 25, 'n01': 25, 'n10': 25, 'n00': 25}, correlation_type)
+    speed_up_count = 0
+    non_speed_up_count = 0
     count_upperbound = 0
     count_estimation = 0
     result = []
@@ -98,12 +108,16 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
                 else:
                     count_estimation = count_estimation + 1
                     correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                    if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
+                        non_speed_up_count = non_speed_up_count + 1
+                    else:
+                        speed_up_count = speed_up_count + 1
                     if correlation_estimation > correlation_threshold:
                         result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
                         #print(result[-1])
             j = j + 1
     end = dt.datetime.now()
-    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. result len:', len(result))
+    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
 
 
 def branch_range_search(transaction_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
@@ -116,6 +130,9 @@ def branch_range_search(transaction_dict, correlation_type, correlation_threshol
         item_list.remove('')
     if 'total_number_of_record' in item_list:
         item_list.remove('total_number_of_record')
+    no_correlation_value = aadcm.get_pair_correlation({'n11': 25, 'n01': 25, 'n10': 25, 'n00': 25}, correlation_type)
+    speed_up_count = 0
+    non_speed_up_count = 0
     count_upperbound = 0
     count_estimation = 0
     result = []
@@ -146,12 +163,16 @@ def branch_range_search(transaction_dict, correlation_type, correlation_threshol
                         pair_tuple = [second_item, first_item]
                     count_estimation = count_estimation + 1
                     correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                    if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
+                        non_speed_up_count = non_speed_up_count + 1
+                    else:
+                        speed_up_count = speed_up_count + 1
                     if correlation_estimation > correlation_threshold:
                         result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
                         #print(result[-1])
             j = j + 1
     end = dt.datetime.now()
-    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. result len:', len(result))
+    print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
 
 
 def test_adr_simulation_data():
