@@ -255,6 +255,7 @@ def split_test():
             else:
                 test_tran_dict[key] = tran_dict[key]
     test_tran_dict = tran_dict
+    # when alpha=0.05, we have 1% ECC
     # added value: 1000: 0.18, 100: 0.4, 20: 0.6
     test_setting_list = [['Relative Risk', 10000], ['Probability Difference', 0.001], ['Probability Ratio', 10000], ['Added Value', 0.3], ['Odds Ratio', 10000]]
     test_setting_list = [['Relative Risk', 5000], ['Relative Risk', 2000], ['Relative Risk', 1000], ['Relative Risk', 500]]
