@@ -231,7 +231,7 @@ def get_all_actual_ecc(cc=0.5, whether_correct=True, target_p_value=0.05, delta=
         speed_up_count = 0
         non_speed_up_count = 0
         file = open('data/'+correlation_type+str(target_p_value)+'.csv', 'wt')
-        file.write('drug, adr, '+correlation_type+'\n')
+        file.write('drug,adr,'+correlation_type+'\n')
         for drug in drug_list:
             for adr in adr_list:
                 correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
