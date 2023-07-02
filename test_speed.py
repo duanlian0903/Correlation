@@ -37,7 +37,7 @@ def brute_force_search(transaction_dict, correlation_type, correlation_threshold
     print('total time is', (end-begin).total_seconds(), '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
 
 
-def upperbound_screen_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+def upperbound_screen_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True, whether_get_candidate_list=True):
     begin = dt.datetime.now()
     print(begin, 'start upperbound search with relaxed upperbound', whether_relaxed_upperbound)
     item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
@@ -63,6 +63,10 @@ def upperbound_screen_search(transaction_dict, correlation_type, correlation_thr
             correlation_upperbound = aadcsu.get_pair_correlation_upperbound_with_given_pair_tuple(item_frequency_dict, [drug, adr], correlation_type, cc, not whether_relaxed_upperbound, target_p_value, delta, whether_speed_up_screen)
             if correlation_upperbound > correlation_threshold:
                 count_estimation = count_estimation + 1
+                #'''
+                if whether_get_candidate_list:
+                    result.append([drug, adr])
+                '''
                 correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                 if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
                     non_speed_up_count = non_speed_up_count + 1
@@ -71,11 +75,13 @@ def upperbound_screen_search(transaction_dict, correlation_type, correlation_thr
                 if correlation_estimation > correlation_threshold:
                     result.append([drug, adr, correlation_estimation])
                     #print(result[-1])
+                #'''
     end = dt.datetime.now()
     print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
+    return result
 
 
-def branch_individual_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+def branch_individual_search(transaction_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True, whether_get_candidate_list=True):
     begin = dt.datetime.now()
     print(begin, 'start branch individual search with relaxed upperbound', whether_relaxed_upperbound)
     item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
@@ -107,6 +113,10 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
                     j = len(item_list)
                 else:
                     count_estimation = count_estimation + 1
+                    #'''
+                    if whether_get_candidate_list:
+                        result.append(pair_tuple)
+                    '''
                     correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                     if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
                         non_speed_up_count = non_speed_up_count + 1
@@ -115,12 +125,14 @@ def branch_individual_search(transaction_dict, correlation_type, correlation_thr
                     if correlation_estimation > correlation_threshold:
                         result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
                         #print(result[-1])
+                    #'''
             j = j + 1
     end = dt.datetime.now()
     print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
+    return result
 
 
-def branch_range_search(transaction_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+def branch_range_search(transaction_dict, correlation_type, correlation_threshold, whether_general_half_search=True, whether_relaxed_upperbound=True, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True, whether_get_candidate_list=True):
     begin = dt.datetime.now()
     print(begin, 'start branch range search with relaxed upperbound', whether_relaxed_upperbound, 'and general half search', whether_general_half_search)
     item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
@@ -162,6 +174,10 @@ def branch_range_search(transaction_dict, correlation_type, correlation_threshol
                     else:
                         pair_tuple = [second_item, first_item]
                     count_estimation = count_estimation + 1
+                    #'''
+                    if whether_get_candidate_list:
+                        result.append(pair_tuple)
+                    '''
                     correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, pair_tuple, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
                     if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
                         non_speed_up_count = non_speed_up_count + 1
@@ -170,9 +186,85 @@ def branch_range_search(transaction_dict, correlation_type, correlation_threshol
                     if correlation_estimation > correlation_threshold:
                         result.append([pair_tuple[0], pair_tuple[1], correlation_estimation])
                         #print(result[-1])
+                    #'''
             j = j + 1
     end = dt.datetime.now()
     print('total time is', (end-begin).total_seconds(), '. upperbound count:', count_upperbound, '. estimation count:', count_estimation, '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
+    return result
+
+
+def get_second_step_result(first_step_result, transaction_dict, correlation_type, correlation_threshold, cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+    item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
+    no_correlation_value = aadcm.get_pair_correlation({'n11': 25, 'n01': 25, 'n10': 25, 'n00': 25}, correlation_type)
+    speed_up_count = 0
+    non_speed_up_count = 0
+    begin = dt.datetime.now()
+    result = []
+    for each_pair in first_step_result:
+        correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, each_pair, correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+        if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
+            non_speed_up_count = non_speed_up_count + 1
+        else:
+            speed_up_count = speed_up_count + 1
+        if correlation_estimation > correlation_threshold:
+            result.append([each_pair[0], each_pair[1], correlation_estimation])
+    end = dt.datetime.now()
+    print('total time is', (end-begin).total_seconds(), '. speed up count:', speed_up_count, '. non speed up count:', non_speed_up_count, '. result len:', len(result))
+    return result
+
+
+def get_all_actual_ecc(cc=0.5, whether_correct=True, target_p_value=0.05, delta=0.0001, whether_speed_up_screen=True):
+    transaction_dict = adlt.get_transaction_dict('data/real/NewFAERS')
+    item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
+    drug_list = []
+    adr_list = []
+    for item_key in item_frequency_dict:
+        if len(item_key) > 0:
+            if item_key[0] == 'd':
+                drug_list.append(item_key)
+            if item_key[0] == 'a':
+                adr_list.append(item_key)
+    drug_list = sorted(drug_list)
+    adr_list = sorted(adr_list)
+    for correlation_type in ['Added Value', 'Odds Ratio', 'Probability Difference', 'Probability Ratio', 'Relative Risk']:
+        no_correlation_value = aadcm.get_pair_correlation({'n11': 25, 'n01': 25, 'n10': 25, 'n00': 25}, correlation_type)
+        speed_up_count = 0
+        non_speed_up_count = 0
+        file = open('data/'+correlation_type+str(target_p_value)+'.csv', 'wt')
+        file.write('drug, adr, '+correlation_type+'\n')
+        for drug in drug_list:
+            for adr in adr_list:
+                correlation_estimation = aadcsu.get_pair_correlation_estimation_with_given_transaction_dict(transaction_dict, item_frequency_dict, [drug, adr], correlation_type, cc, whether_correct, target_p_value, delta, whether_speed_up_screen)
+                if (correlation_estimation > no_correlation_value + 0.000001) | (correlation_estimation < no_correlation_value - 0.000001):
+                    non_speed_up_count = non_speed_up_count + 1
+                else:
+                    speed_up_count = speed_up_count + 1
+                file.write(drug+', '+adr+', '+str(correlation_estimation)+'\n')
+        file.close()
+        print(dt.datetime.now(), correlation_type, speed_up_count, non_speed_up_count)
+
+
+def split_test():
+    tran_dict = adlt.get_transaction_dict('data/real/NewFAERS')
+    test_tran_dict = {}
+    for key in tran_dict:
+        if len(key) > 0:
+            if (key[0] == 'a') | (key[0] == 'd'):
+                if int(key[1:]) < 50:
+                    test_tran_dict[key] = tran_dict[key]
+            else:
+                test_tran_dict[key] = tran_dict[key]
+    test_tran_dict = tran_dict
+    # added value: 1000: 0.18, 100: 0.4, 20: 0.6
+    test_setting_list = [['Relative Risk', 10000], ['Probability Difference', 0.001], ['Probability Ratio', 10000], ['Added Value', 0.3], ['Odds Ratio', 10000]]
+    test_setting_list = [['Relative Risk', 5000], ['Relative Risk', 2000], ['Relative Risk', 1000], ['Relative Risk', 500]]
+    for para_list in test_setting_list:
+        print('\nwhen', para_list)
+        correlation_type = para_list[0]
+        correlation_threshold = para_list[1]
+        first_result = branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=False, whether_get_candidate_list=False)
+        #result = get_second_step_result(first_result, test_tran_dict, correlation_type, correlation_threshold)
+        #print(result)
 
 
 def test_adr_simulation_data():
@@ -213,4 +305,7 @@ def test_adr_simulation_data():
 
 
 
-test_adr_simulation_data()
+#test_adr_simulation_data()
+#split_test()
+get_all_actual_ecc()
+
