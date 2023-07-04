@@ -258,7 +258,12 @@ def split_test():
     # when alpha=0.05, we have 1% ECC
     # added value: 1000: 0.18, 100: 0.4, 20: 0.6
     test_setting_list = [['Relative Risk', 10000], ['Probability Difference', 0.001], ['Probability Ratio', 10000], ['Added Value', 0.3], ['Odds Ratio', 10000]]
-    test_setting_list = [['Relative Risk', 5000], ['Relative Risk', 2000], ['Relative Risk', 1000], ['Relative Risk', 500]]
+    test_setting_list = [['Added Value', 0.7], ['Added Value', 0.4], ['Added Value', 0.3], ['Added Value', 0.2], ['Added Value', 0.1], ['Added Value', 0.08], ['Added Value', 0.05],
+                         ['Odds Ratio', 50000], ['Odds Ratio', 10000], ['Odds Ratio', 5000], ['Odds Ratio', 2000], ['Odds Ratio', 1000], ['Odds Ratio', 500], ['Odds Ratio', 200],
+                         ['Probability Difference', 0.003], ['Probability Difference', 0.001], ['Probability Difference', 0.0006], ['Probability Difference', 0.0003], ['Probability Difference', 0.0002], ['Probability Difference', 0.0001], ['Probability Difference', 0.00005],
+                         ['Probability Ratio', 50000], ['Probability Ratio', 10000], ['Probability Ratio', 5000], ['Probability Ratio', 2000], ['Probability Ratio', 1000], ['Probability Ratio', 500], ['Probability Ratio', 200],
+                         ['Relative Risk', 50000], ['Relative Risk', 10000], ['Relative Risk', 5000], ['Relative Risk', 2000], ['Relative Risk', 1000], ['Relative Risk', 500], ['Relative Risk', 200]
+                         ]
     for para_list in test_setting_list:
         print('\nwhen', para_list)
         correlation_type = para_list[0]
@@ -307,6 +312,6 @@ def test_adr_simulation_data():
 
 
 #test_adr_simulation_data()
-#split_test()
-get_all_actual_ecc()
+split_test()
+#get_all_actual_ecc()
 
