@@ -2,6 +2,7 @@ import api.data_load.transaction as adlt
 import api.common.data_type.list_dict_set_tuple as acdtldst
 import api.analytics.descriptive.correlation.measure as aadcm
 import api.analytics.descriptive.correlation.speed_up as aadcsu
+import api.analytics.descriptive.correlation.contingency_table_correction as aadcctc
 import datetime as dt
 
 
@@ -244,6 +245,34 @@ def get_all_actual_ecc(cc=0.5, whether_correct=True, target_p_value=0.05, delta=
         print(dt.datetime.now(), correlation_type, speed_up_count, non_speed_up_count)
 
 
+def get_all_p_value():
+    transaction_dict = adlt.get_transaction_dict('data/real/NewFAERS')
+    item_frequency_dict = adlt.get_item_frequency_dict(transaction_dict)
+    drug_list = []
+    adr_list = []
+    for item_key in item_frequency_dict:
+        if len(item_key) > 0:
+            if item_key[0] == 'd':
+                drug_list.append(item_key)
+            if item_key[0] == 'a':
+                adr_list.append(item_key)
+    drug_list = sorted(drug_list)
+    adr_list = sorted(adr_list)
+    n = item_frequency_dict['total_number_of_record']
+    file = open('data/p-value.csv', 'wt')
+    file.write('drug,adr,do,ao,n11,p-value\n')
+    for drug in drug_list:
+        for adr in adr_list:
+            drug_occurrence = item_frequency_dict[drug]
+            adr_occurrence = item_frequency_dict[adr]
+            pair_occurrence = adlt.get_itemset_frequency(transaction_dict, [drug, adr])
+            if pair_occurrence == 0:
+                pair_occurrence = 0.1/n
+            p_value = aadcctc.likelihood_ratio_p_value_with_binomial_distribution(pair_occurrence/n, drug_occurrence/n*adr_occurrence/n, n)
+            file.write(drug+','+adr+','+str(drug_occurrence)+','+str(adr_occurrence)+','+str(pair_occurrence)+','+str(p_value)+'\n')
+    file.close()
+
+
 def split_test():
     tran_dict = adlt.get_transaction_dict('data/real/NewFAERS')
     test_tran_dict = {}
@@ -314,4 +343,4 @@ def test_adr_simulation_data():
 #test_adr_simulation_data()
 split_test()
 #get_all_actual_ecc()
-
+#get_all_p_value()
