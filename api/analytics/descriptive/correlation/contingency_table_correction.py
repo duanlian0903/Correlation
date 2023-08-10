@@ -73,3 +73,7 @@ def get_upperbound_corrected_contingency_table_dict(contingency_table_dict, targ
         corrected_ocp = bound_dict['upperbound']
     return {'n11': corrected_ocp*n, 'n10': contingency_table_dict['n11'] + contingency_table_dict['n10'] - corrected_ocp * n,
             'n01': contingency_table_dict['n11'] + contingency_table_dict['n01'] - corrected_ocp * n, 'n00': contingency_table_dict['n00'] - contingency_table_dict['n11'] + corrected_ocp * n}
+
+
+def get_cc_contingency_table_dict(contingency_table_dict, cc=0.5):
+    return {'n11': contingency_table_dict['n11']+cc, 'n10': contingency_table_dict['n10']+cc, 'n01': contingency_table_dict['n01']+cc, 'n00': contingency_table_dict['n00']+cc}
