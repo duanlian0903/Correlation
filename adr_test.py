@@ -4,6 +4,7 @@ import api.analytics.evaluation as aocae
 import api.common.data_type.file as aocdtfo
 import pandas as pd
 import math
+import datetime as dt
 
 
 def get_dataset_folder_name():
@@ -137,6 +138,7 @@ def get_alpha_correlation_degree_dict(contingency_table_dict, alpha):
     correlation_degree_dict['PR_CIL' + str(alpha)] = aocadcm.get_probability_ratio_confidence_interval(tcp, ecp, n, alpha)[0]
     correlation_degree_dict['RR_CIL' + str(alpha)] = aocadcm.get_relative_risk_confidence_interval(contingency_table_dict, alpha)[0]
     correlation_degree_dict['PH_CIL' + str(alpha)] = aocadcm.get_phi_coefficient_confidence_interval(contingency_table_dict, alpha)[0]
+    check = 1
     #correlation_degree_dict['AV_CIC' + str(alpha)] = aocadcm.get_correlation_degree_confidence_interval_point_estimation(aocadcm.get_added_value_confidence_interval(contingency_table_dict, alpha), 0)
     #correlation_degree_dict['LV_CIC' + str(alpha)] = aocadcm.get_correlation_degree_confidence_interval_point_estimation(aocadcm.get_probability_difference_confidence_interval(tcp, ecp, n, alpha), 0)
     #correlation_degree_dict['OR_CIC' + str(alpha)] = aocadcm.get_correlation_degree_confidence_interval_point_estimation(aocadcm.get_odds_ratio_confidence_interval(contingency_table_dict, alpha), 1)
@@ -184,7 +186,6 @@ def calculate_dataset_correlation():
             aocdtfo.save_pickle_data(correlation_df, get_dataset_folder_name()+'cd.'+str(dataset_size)+'.pk', False)
         for alpha in alpha_list:
             print('Start alpha ' + str(alpha))
-            check = 1
             if not aocdtfo.check_file_existence(get_dataset_folder_name()+'cd.'+str(dataset_size)+'.'+str(alpha)+'.pk'):
                 matrix = []
                 for pair in current_all_contingency_table_dict:
