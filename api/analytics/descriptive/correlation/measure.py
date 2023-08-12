@@ -141,7 +141,20 @@ def get_odds_ratio_confidence_interval(contingency_table_dict, alpha):
     # wald correction
     z_score = aaddcbpvass.get_z_score_from_p_value(alpha / 2)
     try:
-        se = (1/contingency_table_dict['n11']+1/contingency_table_dict['n10']+1/contingency_table_dict['n01']+1/contingency_table_dict['n00']) ** 0.5
+        n11 = contingency_table_dict['n11']
+        n10 = contingency_table_dict['n10']
+        n01 = contingency_table_dict['n01']
+        n00 = contingency_table_dict['n00']
+        n = n11 + n10 + n01 + n00
+        if n11 == 0:
+            n11 = 0.5/n
+        if n10 == 0:
+            n10 = 0.5/n
+        if n01 == 0:
+            n01 = 0.5/n
+        if n00 == 0:
+            n00 = 0.5/n
+        se = (1/n11+1/n10+1/n01+1/n00) ** 0.5
         odds_ratio = get_odds_ratio(contingency_table_dict)
         return [odds_ratio/math.exp(z_score*se), odds_ratio*math.exp(z_score*se)]
     except:

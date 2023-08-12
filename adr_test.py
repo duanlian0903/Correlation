@@ -226,6 +226,7 @@ def calculate_aki_correlation():
         correlation_degree_dict = {}
         contingency_table_dict = {'n11': raw_df.loc[i, 'n11'], 'n10': raw_df.loc[i, 'n10'], 'n01': raw_df.loc[i, 'n01'], 'n00': raw_df.loc[i, 'n00']}
         correlation_degree_dict.update(get_basic_correlation_degree_dict(contingency_table_dict))
+        correlation_degree_dict.update(get_cc_correlation_degree_dict(contingency_table_dict))
         for alpha in alpha_list:
             correlation_degree_dict.update(get_alpha_correlation_degree_dict(contingency_table_dict, alpha))
         matrix.append(correlation_degree_dict)
@@ -245,9 +246,9 @@ def evaluate_aki():
     aocdtfo.save_dict_as_json_file(result_dict, 'data/AKI/rsq.json')
 
 
-#calculate_aki_correlation()
-#evaluate_aki()
+calculate_aki_correlation()
+evaluate_aki()
 #aocmt.embarrassing_parallel_process(calculate_dataset_correlation, [0, 1, 2, 3, 4], 1)
 #evaluate_method()
-calculate_dataset_correlation()
-evaluate_method()
+#calculate_dataset_correlation()
+#evaluate_method()
