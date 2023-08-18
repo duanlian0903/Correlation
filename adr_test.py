@@ -219,7 +219,7 @@ def evaluate_method():
 
 
 def calculate_aki_correlation():
-    raw_df = pd.read_csv('data/AKI/data.csv')
+    raw_df = pd.read_csv('data/real/AKI/data.csv')
     alpha_list = get_alpha_list()
     matrix = []
     for i in raw_df.index:
@@ -232,18 +232,18 @@ def calculate_aki_correlation():
         matrix.append(correlation_degree_dict)
     correlation_df = pd.DataFrame(matrix)
     result_df = pd.concat([raw_df, correlation_df], axis=1)
-    aocdtfo.save_pickle_data(result_df, 'data/AKI/result.pk', True)
+    aocdtfo.save_pickle_data(result_df, 'data/real/AKI/result.pk', True)
 
 
 def evaluate_aki():
-    result_df = aocdtfo.load_pickle_data('data/AKI/result.pk')
+    result_df = aocdtfo.load_pickle_data('data/real/AKI/result.pk')
     attribute_name_list = list(result_df.columns)
     result_dict = {}
     for attribute_name in attribute_name_list[8:]:
         result_df = result_df.sort_values(by=attribute_name, ascending=False)
         relevance_score_list = list(result_df[attribute_name_list[7]])
         result_dict[attribute_name] = aocae.get_ranking_quality_score(relevance_score_list)
-    aocdtfo.save_dict_as_json_file(result_dict, 'data/AKI/rsq.json')
+    aocdtfo.save_dict_as_json_file(result_dict, 'data/real/AKI/rsq.json')
 
 
 calculate_aki_correlation()
