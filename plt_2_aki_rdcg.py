@@ -23,6 +23,8 @@ for target_type in target_type_list:
     plt.hlines(cc_y, min(ecc_x), max(ecc_x), color='black', linestyle='-.')
     plt.hlines(or_y, min(ecc_x), max(ecc_x), color='black', linestyle=':')
     plt.legend(['ECC (Our Method)', 'MLE Lower Bound', 'Continuity Correction', 'MLE'])
+    plt.xlabel('$log_{10}(\\alpha)$')
+    plt.ylabel('RDCG')
     plt.show()
 '''
 best_result_group = result_df.groupby(['Method', 'Modification'])

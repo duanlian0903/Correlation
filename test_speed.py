@@ -274,7 +274,8 @@ def get_all_p_value():
 
 
 def split_test():
-    tran_dict = adlt.get_transaction_dict('data/real/NewFAERS')
+    #tran_dict = adlt.get_transaction_dict('data/real/NewFAERS')
+    tran_dict = adlt.get_transaction_dict('data/simulation/adr')
     test_tran_dict = {}
     for key in tran_dict:
         if len(key) > 0:
@@ -293,11 +294,18 @@ def split_test():
                          ['Probability Ratio', 50000], ['Probability Ratio', 10000], ['Probability Ratio', 5000], ['Probability Ratio', 2000], ['Probability Ratio', 1000], ['Probability Ratio', 500], ['Probability Ratio', 200],
                          ['Relative Risk', 50000], ['Relative Risk', 10000], ['Relative Risk', 5000], ['Relative Risk', 2000], ['Relative Risk', 1000], ['Relative Risk', 500], ['Relative Risk', 200]
                          ]
+    test_setting_list = [['Relative Risk', 10000], ['Relative Risk', 5000], ['Relative Risk', 2000], ['Relative Risk', 1000], ['Relative Risk', 500], ['Relative Risk', 200]]
+    test_setting_list = [['Probability Difference', 0.003], ['Probability Difference', 0.001], ['Probability Difference', 0.0005], ['Probability Difference', 0.0003], ['Probability Difference', 0.0001], ['Probability Difference', 0.00005]]
     for para_list in test_setting_list:
         print('\nwhen', para_list)
         correlation_type = para_list[0]
         correlation_threshold = para_list[1]
-        first_result = branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=False, whether_get_candidate_list=False)
+        first_result = upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, whether_get_candidate_list=False)
+        #first_result = upperbound_screen_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, whether_get_candidate_list=False)
+        #first_result = branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=False, whether_get_candidate_list=False)
+        #first_result = branch_individual_search(test_tran_dict, correlation_type, correlation_threshold, whether_relaxed_upperbound=True, whether_get_candidate_list=False)
+        #first_result = branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=False, whether_get_candidate_list=False)
+        #first_result = branch_range_search(test_tran_dict, correlation_type, correlation_threshold, whether_general_half_search=False, whether_relaxed_upperbound=True, whether_get_candidate_list=False)
         #result = get_second_step_result(first_result, test_tran_dict, correlation_type, correlation_threshold)
         #print(result)
 
